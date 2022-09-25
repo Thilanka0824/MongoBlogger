@@ -49,8 +49,27 @@ const getUUID = () => {
     return uuidList[randIndex]
 }
 
+
+
+// 1.
 const getPosts = (searchObject, sortObject, limit, skip) => {
-    const posts = db.blogs.find(searchObject).sort(sortObject).limit(2).skip(1).toArray()
+    let posts = db.blogs.find(searchObject).sort(sortObject).limit(limit).skip(skip).toArray()
+
+    if (sortObject === undefined) {
+        sortObject = {}
+
+    }
+
+    if (limit === undefined) {
+        limit = 0
+
+    }
+
+    if (skip === undefined) {
+        skip = 0
+
+    }
+
     return posts
 }
 
@@ -58,14 +77,18 @@ const searchObject = {}
 const sortObject = {}
 const limit = 10
 const skip = 0
-// 1.
-searchObject.createdAt = {$gt: new Date("2022/05/01")}
-sortObject.lastModified = 1
+
+/****************
+****Solutions****
+****************/
+
+// searchObject.createdAt = {$gt: new Date("2022/05/01")}
+// sortObject.lastModified = -1
+// sortObject.id = 1
 
 // Uncomment the following line when you're ready to run getPosts
-const posts = getPosts(searchObject, sortObject, limit, skip)
-console.log(posts)
- 
+// getPosts(searchObject, sortObject, undefined, 0)
+// console.log(posts)
 
 
 /* 
@@ -81,9 +104,11 @@ Stretch goals:
         still execute with the other arguments that are defined.
 */
 
+
 // 2.
 const createPost = (newPost) => {
     const id = getUUID()
+    
     const postData = {
         createdAt: new Date(),
         title: newPost.title,
@@ -92,20 +117,54 @@ const createPost = (newPost) => {
         categories: newPost.categories,
         lastModified: new Date(),
         id: getUUID()
-        
+
     }
+    
+    
     db.blogs.insertOne(postData)
 }
 
-const newPost = {
+const thePostImMaking = {
     title: "The Dark Knight Movie Review",
     text: "This movie was amazing because I am Batman.",
     author: "Bruce Wayne",
     categories: ["superhero", "action", "thriller"]
 }
 
+const thePostImMaking2 = {
+    title: "The 2001 Lakers were the Greatest of All Time",
+    text: "see title",
+    author: "Jerry Buss",
+    categories: ["Kobe", "Shaq", "Horry"]
+}
+
+const thePostImMaking3 = {
+    title: "The 2004 Pistons were a team of Defenders",
+    text: "They didn't have any elite shot creaters. They scored using ball movement and passing",
+    author: "Chauncey Billuips",
+    categories: ["Billups", "Prince", "Rasheed Wallace", "Ben Wallace"]
+}
+
+const thePostImMaking4 = {
+    title: "2018 Lebron James was the Ultimate Peak of his Prime",
+    text: "see facts, son",
+    author: "Mav Carter",
+    categories: ["LeBron", "Kevin Love", "JR Smith"]
+}
+
+const thePostImMaking5 = {
+    title: "The Avengers Movie Review",
+    text: "This movie was amazing because of Iron Man.",
+    author: "Tony Stark",
+    categories: ["superhero", "action", "thriller", "popular"]
+}
+
+/****************
+****Solutions****
+****************/
+
 // Uncomment the following line when you're ready to run createPosts
- createPost(newPost)
+// createPost(thePostImMaking5)
 
 /*
 Requirements:
@@ -117,6 +176,8 @@ Stretch Goal:
         it throws an error
 */
 
+
+// 3.
 const updatePost = (id, newPostData) => {
     db.blogs.updateOne({
         id: postId
@@ -127,9 +188,9 @@ const updatePost = (id, newPostData) => {
             author: newPostData.author,
             categories: newPostData.categories,
             lastModified: new Date()
-            
+
         }
-    }) 
+    })
 }
 
 const updatedPost = {
@@ -138,10 +199,14 @@ const updatedPost = {
     author: "Batman",
     categories: ["superhero", "action", "thriller"]
 }
-const postId = "8d850030-d5d0-47c6-8ed5-a5265c166cb4" // This variable should be the uuid of the blog post you created before using createPost
+const postId = "8d850030-d5d0-47c6-8ed5-a5265c166cb4" // This variable should be the uuid of the blog post you created before, using createPost
+
+/****************
+****Solutions****
+****************/
 
 // Uncomment the following line when you're ready to run updatePost
-updatePost(postId, updatedPost)
+// updatePost(postId, updatedPost)
 
 /*
 Requirements:
@@ -156,18 +221,39 @@ Stretch Goal:
 
 const deletePost = (id) => {
     db.blogs.deleteOne({
-        id: postIdToDelete
+        id: id
     })
 }
 
-const postIdToDelete = "dcc2102d-a20a-4765-8dc4-9079af9fdc9b"
+const postIdToDelete = "61e9e0da-2bf6-4b3b-adb2-b03326d1d7a9"
+
+/****************
+****Solutions****
+****************/
 
 // Uncomment the following line when you're ready to run deletePost
-deletePost(postIdToDelete)
+// deletePost(postIdToDelete)
 
 /*
 Requirements:
     - Add code in deletePost so that it will find a post by the given id and delete it.
 Stretch Goal:
     - Write a new function deletePosts that takes an array of ids as an argument and deletes all of the posts with those ids.
+
 */
+
+const idArray = ["b759942f-2fcb-467e-8f25-3873d357171e", "f95b8b6e-4552-4fca-a6c5-1b2588468b6e", "08dd1f20-7d31-4120-89ed-343d4006a7cb", "35a04237-507c-45f5-b770-3ce2c2fd088b"]
+
+const deletePosts = (arr) => {
+
+    for (let i = 0; i < arr.length; i++) {
+        db.blogs.deleteOne({
+            id: arr[i]
+        })
+    }
+}
+
+
+
+deletePosts(idArray)
+
